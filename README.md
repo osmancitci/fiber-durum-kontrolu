@@ -1,2 +1,3 @@
 # fiber-durum-kontrolu
-Fiber Durum Kontrolü: Bina ve daire bazlı fiber internet altyapı durumunu takip eden, otomatik yenileme ve JSON endpoint desteği sunan modern web uygulaması.
+Fiber Durum Kontrolü
+Bu proje, bir binadaki fiber internet altyapı durumunu takip etmenizi sağlar. Hem web arayüzü üzerinden görselleştirme yapar hem de JSON formatında veri sunar. Kullanımı basittir ve yapılandırma config.json üzerinden yapılır.
