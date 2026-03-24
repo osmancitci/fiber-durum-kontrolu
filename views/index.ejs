@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Fiber Durumu Kontrolü</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { 
+        font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+        padding:40px 20px; min-height:100vh; color:#e2e8f0; margin-top:60px; 
+    }
+
+    /* Üst fiber bar */
+    .top-bar { 
+        position:fixed; top:0; left:0; width:100%; height:60px; 
+        display:flex; justify-content:center; align-items:center; 
+        font-weight:bold; font-size:24px; color:#fff; z-index:9999; 
+        box-shadow:0 4px 6px rgba(0,0,0,0.2); transition:all 0.3s; 
+    }
+
+    .container { max-width:1200px; margin:0 auto; }
+    h1 { color:#fff; margin-bottom:30px; font-size:28px; font-weight:600; text-align:center; }
+
+    /* Bilgi satırları */
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+    .info-row p {
+        font-size: 20px;
+        font-weight: 600;
+        color: #e2e8f0;
+        margin: 0;
+    }
+    .info-row span { font-weight: 700; color: #fff; }
+
+    /* Tablo stili */
+    .table-wrapper { 
+        background: rgba(255,255,255,0.05); 
+        backdrop-filter:blur(10px); 
+        border-radius:16px; 
+        overflow:hidden;
+        box-shadow:0 20px 60px rgba(0,0,0,0.3); 
+        border:1px solid rgba(255,255,255,0.1); 
+        margin-top:10px;
+    }
+
+    table { width:100%; border-collapse:collapse; }
+    thead { background: linear-gradient(135deg,#1e40af 0%,#3b82f6 100%); }
+    th { padding:12px 16px; /* aralığı biraz düşürdüm */
+         text-align:left; font-weight:700; font-size:14px; text-transform:uppercase; color:#fff; position:relative; }
+    th:not(:last-child)::after { content:''; position:absolute; right:0; top:50%; transform:translateY(-50%); height:20px; width:1px; background: rgba(255,255,255,0.2); }
+
+    tbody tr { background: rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+    tbody tr:hover { background: rgba(59,130,246,0.1); transform: scale(1.01); box-shadow:0 4px 20px rgba(59,130,246,0.2); }
+    td { padding:10px 16px; /* aralığı yukarıdan aşağı biraz daha sıkı yaptım */
+         font-size:14px; font-weight:600; /* yazıları kalın yaptım */
+         vertical-align:middle; }
+
+    .status { display:inline-block; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+    .status.completed { background: rgba(34,197,94,0.2); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+    .status.pending { background: rgba(255,0,0,0.2); color:#ff0000; border:1px solid rgba(255,0,0,0.3); }
+
+    .assignee { display:flex; align-items:center; gap:10px; }
+    .avatar { width:32px; height:32px; border-radius:50%; background: linear-gradient(135deg, #3b82f6, #60a5fa);
+              display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:12px; border:2px solid rgba(255,255,255,0.2); }
+
+    @media (max-width:768px) { 
+        .table-wrapper { overflow-x:auto; } 
+        table { min-width:600px; } 
+        .info-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .info-row p { font-size:18px; }
+    }
+	
+	    footer {
+        text-align: center;
+        margin-top: 30px;
+        font-style: italic;
+        color: #cbd5e1; /* hafif gri renk */
+        font-size: 14px;
+    }
+</style>
+<link id="favicon" rel="icon" type="image/x-icon" href="/red.ico">
+<link id="favicon-shortcut" rel="shortcut icon" type="image/x-icon" href="/red.ico">
+</head>
+<body>
+
+<!-- Üst fiber bar -->
+<div id="fiber-bar" class="top-bar"></div>
+<div class="container">
+    <div class="info-row">
+        <p>Bina ID: <span><%= binaId %></span></p>
+        <p>Yenileme süresi: <span id="yenile-sure"><%= dakika %> dk</span></p>
+        <p>Bu binadaki fiber durumu: 
+            <span class="<%= fiberBinadaVar ? 'status completed' : 'status pending' %>">
+                <%= fiberBinadaVar ? '✅ VAR' : '❌ YOK' %>
+            </span>
+        </p>
+    </div>
+
+    <!-- Fiber tablosu -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Sıra No</th>
+                    <th>Daire ID</th>
+                    <th>Daire</th>
+                    <th>Max Hız</th>
+                    <th>Servis Türü</th>
+                    <th>Fiber</th>
+                </tr>
+            </thead>
+			<% 
+    // ID sırasına göre sırala
+    daireDurumlar.sort((a, b) => a.id - b.id); 
+%>
+<tbody>
+    <% daireDurumlar.forEach((d, i) => { %>
+    <tr>
+        <td><%= i+1 %></td>
+        <td><%= d.id %></td>
+        <td><%= d.name %></td>
+        <td><div class="assignee"><div class="avatar"><%= d.speed %></div> Mbps</div></td>
+        <td><span class="status <%= d.fiber ? 'completed' : 'pending' %>"><%= d.fiber ? 'FIBER' : d.service || 'YOK' %></span></td>
+        <td><span class="status <%= d.fiber ? 'completed' : 'pending' %>"><%= d.fiber ? 'FIBER VAR' : 'FIBER YOK' %></span></td>
+    </tr>
+    <% }) %>
+</tbody>
+        </table>
+    </div>
+</div>
+<footer>
+    Son yenileme: <%= new Date(sonYenileme).toLocaleString() %>
+</footer>
+<script>
+const fiberBar = document.getElementById("fiber-bar");
+if (<%= fiberBinadaVar ? 'true' : 'false' %>) {
+    fiberBar.style.background = "linear-gradient(90deg, #28a745, #20c997)";
+    fiberBar.textContent = "Fiber VAR ✅";
+} else {
+    fiberBar.style.background = "linear-gradient(90deg, #dc3545, #e74c3c)";
+    fiberBar.textContent = "Fiber YOK ❌";
+}
+
+
+    const dakika = <%= dakika %>;
+    if (dakika > 0) {
+        setTimeout(() => { window.location.reload(); }, dakika * 60 * 1000);
+    }
+
+
+    const favicon = document.getElementById("favicon");
+    const faviconShortcut = document.getElementById("favicon-shortcut");
+
+    
+    if (<%= fiberBinadaVar ? 'true' : 'false' %>) {
+        favicon.href = "/green.ico";
+        faviconShortcut.href = "/green.ico";
+    } else {
+        favicon.href = "/red.ico";
+        faviconShortcut.href = "/red.ico";
+    }
+</script>
+
+
+
+</body>
+</html>
