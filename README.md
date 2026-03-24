@@ -41,7 +41,7 @@
 {
   "binaId": "xxxxxxxxxx",
   "daireId": "",
-  "dakika": 2
+  "dakika": 30
 }
 ```
 
@@ -61,7 +61,7 @@ npm install
 {
   "binaId": "xxxxxxxxxx",
   "daireId": "",
-  "dakika": 2
+  "dakika": 30
 }
 ```
 ### 4. Sunucuyu Başlatın
