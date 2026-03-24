@@ -49,8 +49,8 @@
 
 ### 1. Depoyu Klonlayın
 ```bash
-git clone https://github.com/username/fiber-durum-kontrol.git
-cd fiber-durum-kontrol
+git clone https://github.com/osmancitci/fiber-durum-kontrolu.git
+cd fiber-durum-kontrolu
 ```
 ### 2. Bağımlılıkları Yükleyin
 ```bash
