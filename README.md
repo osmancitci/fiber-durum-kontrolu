@@ -43,3 +43,45 @@
   "daireId": "",
   "dakika": 2
 }
+```
+
+## ⚙️ Kurulum
+
+### 1. Depoyu Klonlayın
+```bash
+git clone https://github.com/username/fiber-durum-kontrol.git
+cd fiber-durum-kontrol
+```
+### 2. Bağımlılıkları Yükleyin
+```bash
+npm install
+```
+### 3. config.json Dosyasını Düzenleyin
+```json
+{
+  "binaId": "xxxxxxxxxx",
+  "daireId": "",
+  "dakika": 2
+}
+```
+### 4. Sunucuyu Başlatın
+```bash
+npm start
+```
+### 5. Tarayıcıdan erişin
+```bash
+http://localhost:3000
+```
+
+## 📌 Önemli Notlar
+- binaId ve daireId doğru girilmezse sorgu sonuç vermez
+- dakika değeri 0 ise sayfa otomatik yenilenmez
+- JSON endpoint tüm verileri backend’den sağlar, frontend tablo bu verilerle oluşturulur
+
+---
+
+
+
+
+
+
