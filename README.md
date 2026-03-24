@@ -80,8 +80,8 @@ http://localhost:3000
 
 ---
 
-
-
+![Fiber Var](https://github.com/osmancitci/fiber-durum-kontrolu/blob/main/fibervars.jpg)
+![Fiber Yok](https://github.com/osmancitci/fiber-durum-kontrolu/blob/main/fiberyoks.jpg)
 
 
 
